@@ -1,0 +1,30 @@
+SET NOCOUNT ON;
+SELECT
+       SPID = DMRequests.Session_id
+       ,Login_name
+       ,[Status] = Dmrequests.Status
+       ,blk_by = Dmrequests.Blocking_session_id 
+       ,ServerName = DMSESSIONS.host_name
+       ,DatabaseName = DB_Name(DMREQUESTS.DATABASE_ID)
+       ,Command = Dmrequests.command
+       ,Start_Time = Dmrequests.Start_time
+       ,Duration = DATEDIFF(mi,Dmrequests.Start_time,getdate())
+       ,Wait_Type = Dmrequests.wait_type
+       ,wait_time = Dmrequests.Wait_time
+       ,CPU_Time = DMSessions.cpu_time
+       ,Memory_usage
+       ,Reads = Dmrequests.reads
+       ,Writes = Dmrequests.writes
+       ,Percent_Complete = Dmrequests.Percent_complete
+       ,Command = Sqltext.Text
+FROM sys.Dm_exec_sessions as DMsessions
+     INNER JOIN sys.Dm_exec_requests AS DMRequests ON Dmsessions.Session_id = Dmrequests.Session_id
+       CROSS APPLY sys.Dm_exec_sql_text(Dmrequests.Sql_handle) AS SQLText
+WHERE Dmrequests.Status <> 'Background'
+       AND Dmrequests.Command <> 'TASK MANAGER'
+       AND Dmrequests.Session_id <> @@spid
+       --AND DB_Name(DMREQUESTS.DATABASE_ID) = 'PID_Umbrella'
+       --AND login_name = 'FNBJNB01\F5004179'
+ORDER BY DMSessions.cpu_time DESC 
+--ORDER BY DB_Name(DMREQUESTS.DATABASE_ID)
+
