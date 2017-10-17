@@ -1,0 +1,61 @@
+ USE PID_BRM
+ GO 
+  
+  SELECT b.Step_ID,--b.Step_Name, 
+         RTRIM(LTRIM(b.Step_Name)) Step_Name,
+		 [source], 
+		 CONVERT(varchar(10),[starttime],101) [Run_Date],
+		 CONVERT(char(10), MIN([starttime]), 108) as [starttime],
+		 CONVERT(char(10), MAX([endtime]), 108) as [endtime],
+		 [message]
+    FROM [dbo].[sysssislog] a
+         LEFT JOIN [PID_BRM_QA].[lu].[BRM_Phase_One_SSIS_Package_Steps] b
+      ON a.[source] = b.Step_Sub_Name
+   --WHERE a.message LIKE '%failed%'
+   WHERE a.message LIKE '%rows%'
+   --WHERE [source] LIKE '%Airline%'
+   --WHERE b.[Step_Name] = 'Household Data'
+     AND b.step_id = 1
+GROUP BY b.step_id, 
+         RTRIM(LTRIM(b.Step_Name)) ,
+		 [source], 
+		 CONVERT(varchar(10),[starttime],101),
+		 [message]
+  HAVING CONVERT(varchar(10),[starttime],101) >= CONVERT(varchar(10),getdate(),101) -- = '05/22/2017' --     
+ORDER BY b.Step_ID,--[message],
+          RTRIM(LTRIM(b.Step_Name)) 
+		 ,CONVERT(varchar(10),[starttime],101)
+         ,CONVERT(char(10), MIN([starttime]), 108)
+		 --,CONVERT(char(10), MAX([endtime]), 108) desc
+
+
+
+
+--USE [PID_BRM]
+--GO
+
+--SELECT --[id],
+--       [source],convert(varchar(10),[starttime],101) [date],MIN([starttime]) [starttime],MAX([endtime]) [endtime]--,[message]
+--      -- [id]
+--      --,[event]
+--      --,[computer]
+--      --,[operator]
+--      --,[source]
+--      --,[sourceid]
+--      --,[executionid]
+--      --,[starttime]
+--      --,[endtime]
+--      --,[datacode]
+--      --,[databytes]
+--      --,[message]
+--  FROM [dbo].[sysssislog]
+-- WHERE source LIKE '%Recreate Wills HS Tbl%'  
+--GROUP BY --[id],
+--         [source],convert(varchar(10),[starttime],101)--,[message]
+--  --HAVING convert(varchar(10),[starttime],101) >= convert(varchar(10),getdate(),101)
+--ORDER BY MAX([endtime]) DESC
+
+--  SELECT convert(varchar(10),[starttime],101),*
+--    FROM [dbo].[sysssislog]
+--   WHERE source LIKE '%Wills%' 
+	     
