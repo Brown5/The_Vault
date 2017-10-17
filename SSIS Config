@@ -1,0 +1,67 @@
+USE [SSIS Configurations]
+GO
+/****** Object:  Table [dbo].[SSIS_Database_Configurations]    Script Date: 6/13/2017 9:42:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SSIS_Database_Configurations](
+	[ConfigurationFilter] [nvarchar](255) NOT NULL,
+	[ConfiguredValue] [nvarchar](255) NULL,
+	[PackagePath] [nvarchar](255) NOT NULL,
+	[ConfiguredValueType] [nvarchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SSIS_File_Configurations]    Script Date: 6/13/2017 9:42:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SSIS_File_Configurations](
+	[ConfigurationFilter] [nvarchar](255) NOT NULL,
+	[ConfiguredValue] [nvarchar](255) NULL,
+	[PackagePath] [nvarchar](255) NOT NULL,
+	[ConfiguredValueType] [nvarchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SSIS_FTP_Configurations]    Script Date: 6/13/2017 9:42:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SSIS_FTP_Configurations](
+	[ConfigurationFilter] [nvarchar](255) NOT NULL,
+	[ConfiguredValue] [nvarchar](255) NULL,
+	[PackagePath] [nvarchar](255) NOT NULL,
+	[ConfiguredValueType] [nvarchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SSIS_SMS_Configurations]    Script Date: 6/13/2017 9:42:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SSIS_SMS_Configurations](
+	[ConfigurationFilter] [nvarchar](255) NOT NULL,
+	[ConfiguredValue] [nvarchar](255) NULL,
+	[PackagePath] [nvarchar](255) NOT NULL,
+	[ConfiguredValueType] [nvarchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SSIS_SMTP_Configurations]    Script Date: 6/13/2017 9:42:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SSIS_SMTP_Configurations](
+	[ConfigurationFilter] [nvarchar](255) NOT NULL,
+	[ConfiguredValue] [nvarchar](255) NULL,
+	[PackagePath] [nvarchar](255) NOT NULL,
+	[ConfiguredValueType] [nvarchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
