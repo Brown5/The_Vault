@@ -1,0 +1,24 @@
+DECLARE @HScnt INT, @Ucnt INT
+
+ SET @HScnt = (SELECT COUNT(*) FROM dbo.eBucksRewardLevel_HS)
+ SET @Ucnt = (SELECT COUNT(*) FROM dbo.eBucksRewardLevel)
+
+ IF (@HScnt >= @Ucnt * 0.50)
+ BEGIN
+	PRINT 'Executing: Confirm Hot Swap table record count before doing actual swap'
+	IF OBJECT_ID('dbo.eBucksRewardLevel') IS NOT NULL DROP TABLE dbo.eBucksRewardLevel
+	EXEC SYS.SP_RENAME 'dbo.eBucksRewardLevel_HS', 'eBucksRewardLevel'
+	EXEC SYS.SP_RENAME 'dbo.eBucksRewardLevel.PK_eBucksRewardLevel_HS', 'PK_eBucksRewardLevel', N'INDEX'	
+	EXEC SYS.SP_RENAME 'dbo.eBucksRewardLevel.DF_eBucksRewardLevel_TotalMonthlyPoints_HS',  'DF_eBucksRewardLevel_TotalMonthlyPoints', N'DEFAULT_CONSTRAINT';
+	
+ END
+ ELSE BEGIN
+	RAISERROR('ERROR: Check Hot Swap record count for table eBucksRewardLevel', 16, 1);
+ END
+
+SELECT * 
+  FROM sys.objects o
+  WHERE name = 'PK_eBucksRewardLevel'
+
+  SELECT * 
+  FROM sys.
