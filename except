@@ -1,0 +1,30 @@
+USE [PID_BRM];
+
+declare @rowmax bigint = (select max(brm_feedback_id) from [dbo].[BRM_Feedback]);
+
+with stg as
+(
+select [FetchId]
+      ,[DiscussionId]
+      ,[FeedbackTypeId]
+      ,[DateInserted]
+	  ,[ID]
+FROM [stg].[APP_Feedback]
+
+except 
+
+select [brm_fetch_id]
+      ,[discussion_id]
+      ,[feedback_id]
+      ,[create_datetime]
+      ,[ID]
+from [dbo].[BRM_Feedback]
+)
+
+insert into [dbo].[BRM_Feedback]
+select @rowmax + rank() over (order by [FetchId], dateinserted, id) as NewKey
+		,*
+from stg
+
+--266685
+--266637
