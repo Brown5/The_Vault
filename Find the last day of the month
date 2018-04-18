@@ -1,0 +1,10 @@
+----Last Day of Previous Month
+SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE()),0)) LastDay_PreviousMonth
+
+
+----Last Day of Current Month
+SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE())+1,0)) LastDay_CurrentMonth
+
+
+----Last Day of Next Month
+SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE())+2,0)) LastDay_NextMonth
