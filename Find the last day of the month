@@ -8,3 +8,6 @@ SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE())+1,0)) LastDay_CurrentMon
 
 ----Last Day of Next Month
 SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE())+2,0)) LastDay_NextMonth
+
+----Last Day of Previous Month (converted to Int)
+SELECT convert(varchar,EOMONTH (Dateadd(month,-1,CAST(20180101 AS char(8)))),112) test
