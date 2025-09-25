@@ -1,0 +1,39 @@
+USE [PID_Sales]
+GO
+
+
+DECLARE @TSQL VARCHAR(5000),
+        @TSQL_C VARCHAR(1000),
+        @Table_Name VARCHAR(30), 
+        @Columns VARCHAR(2000)
+    
+    SET @Table_Name = 'FCT_SMS_Sales_CARD'
+
+
+	SET @Columns    = (  SELECT STUFF((   SELECT ', '+'src.'+ COLUMN_NAME
+											FROM information_schema.columns 
+										   WHERE TABLE_SCHEMA = 'dbo'
+											 AND TABLE_NAME = @Table_Name
+											 AND COLUMN_NAME <> 'load_datetime'
+										 FOR XML PATH ('')
+										 ), 1, 2, '') AS Cols )
+
+
+SET @TSQL =  
+			  '    WITH SOURCE AS (SELECT * FROM BISRBGFIN02.SALES_MART.dbo.'+@Table_Name+')
+			   
+				    INSERT INTO dbo.'+@Table_Name+'
+					SELECT '+@Columns+'
+					      ,getdate() as load_datetime
+					  FROM
+						   (   SELECT * 
+								 FROM SOURCE
+								WHERE convert(datetime,convert(varchar(10),SALE_DATE_KEY,120)) >= 
+								( SELECT MAX(convert(datetime,convert(varchar(10),SALE_DATE_KEY,120))) -180
+																									  FROM SOURCE ) ) src
+						   LEFT JOIN dbo.FCT_SMS_Sales_CARD ds
+						ON src.composite_Val = ds.composite_val COLLATE SQL_Latin1_General_CP1_CI_AS
+					 WHERE ds.composite_val IS NULL'
+				  
+PRINT @TSQL
+--EXEC (@TSQL)

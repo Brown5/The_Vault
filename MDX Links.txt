@@ -1,0 +1,5 @@
+https://www.google.com/search?q=mdx+metadata+query&rlz=1C1GCEU_enZA858ZA858&oq=MDX+metadat&aqs=chrome.2.0j69i57j0.8840j0j8&sourceid=chrome&ie=UTF-8
+
+https://wiki.dataself.com/Cube_Metadata_MDX_Query
+
+https://bennyaustin.com/2011/03/01/ssas-dmv-queries-cube-metadata/
