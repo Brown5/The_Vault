@@ -1,17 +1,17 @@
 DECLARE @StartDate DATE = '19000101',
-        @NumberOfYears INT = 200;
-
+        @NumberOfYears INT = 300;
+ 
 -- prevent set or regional settings from interfering with 
 -- interpretation of dates / literals
-
+ 
 SET DATEFIRST 7;
 SET DATEFORMAT mdy;
 SET LANGUAGE US_ENGLISH;
-
+ 
 DECLARE @CutoffDate DATE = DATEADD(YEAR, @NumberOfYears, @StartDate);
-
+ 
 -- this is just a holding table for intermediate calculations:
-
+ 
 CREATE TABLE #dim
 (
   [date]       DATE PRIMARY KEY, 
@@ -28,9 +28,9 @@ CREATE TABLE #dim
   Style112     AS CONVERT(CHAR(8),   [date], 112),
   Style101     AS CONVERT(CHAR(10),  [date], 101)
 );
-
+ 
 ---- use the catalog views to generate as many rows as we need
-
+ 
 INSERT #dim([date]) 
 SELECT d
   FROM
@@ -44,10 +44,54 @@ SELECT d
                            ORDER BY s1.[object_id]
                       ) AS x
               ) AS y;
-
-SELECT * FROM #dim d
-
-
+ 
+SELECT 
+       [date]      
+      ,[day]       
+      ,[month]     
+      ,FirstOfMonth
+      ,[MonthName] 
+      ,[week]      
+      ,[ISOweek]   
+      ,[DayOfWeek] 
+      ,[quarter]   
+      ,[year]      
+      ,FirstOfYear 
+      ,Style112    
+      ,Style101    
+      -- 1. Name of the day of the week
+      ,DATENAME(weekday, [date]) AS [DayName]
+      -- 2. Weekend or Weekday indicator
+      ,CASE 
+            WHEN DATENAME(weekday, [date]) IN ('Saturday', 'Sunday') THEN 'Weekend' 
+            ELSE 'Weekday' 
+             END AS [DayType]
+      -- 3. South African Public Holidays Logic
+      ,CASE 
+           -- Fixed Annual Holidays
+           WHEN MONTH([date]) = 1  AND DAY([date]) = 1  THEN 'New Year''s Day'
+           WHEN MONTH([date]) = 3  AND DAY([date]) = 21 THEN 'Human Rights Day'
+           WHEN MONTH([date]) = 4  AND DAY([date]) = 27 THEN 'Freedom Day'
+           WHEN MONTH([date]) = 5  AND DAY([date]) = 1  THEN 'Workers'' Day'
+           WHEN MONTH([date]) = 6  AND DAY([date]) = 16 THEN 'Youth Day'
+           WHEN MONTH([date]) = 8  AND DAY([date]) = 9  THEN 'National Women''s Day'
+           WHEN MONTH([date]) = 9  AND DAY([date]) = 24 THEN 'Heritage Day'
+           WHEN MONTH([date]) = 12 AND DAY([date]) = 16 THEN 'Day of Reconciliation'
+           WHEN MONTH([date]) = 12 AND DAY([date]) = 25 THEN 'Christmas Day'
+           WHEN MONTH([date]) = 12 AND DAY([date]) = 26 THEN 'Day of Goodwill'
+           -- SA Sunday Rule Shifts (Mondays observed in lieu of Sundays)
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2025-04-28' THEN 'Freedom Day (Observed)'
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2026-08-10' THEN 'National Women''s Day (Observed)'
+           -- Variable Easter Holidays (2025)
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2025-04-18' THEN 'Good Friday'
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2025-04-21' THEN 'Family Day'
+           -- Variable Easter Holidays (2026)
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2026-04-03' THEN 'Good Friday'
+           WHEN CONVERT(VARCHAR(10), [date], 120) = '2026-04-06' THEN 'Family Day'
+           ELSE 'Not a Holiday'
+            END AS [SAPublicHoliday]
+ FROM #dim d 
+ORDER BY 1
+ 
+ 
 --DROP TABLE #dim
-
-
